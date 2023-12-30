@@ -1,6 +1,8 @@
 ## What is this?
 
-Keeps computer sessions active with some code for a Pi Pico and a case for it.  Mounts to the computer as an HID keyboard, sends a non used international keystroke to the computer 1-5 times, with a .1-.5 second delay, every 10-30 seconds.  It can be ran as just the microcontroller without the button/LEDs/case if the code is modified.
+The finished device keeps computer sessions active.
+
+Mounts to the computer as an HID keyboard and sends a non used international keystroke to the computer 1-5 times, with a .1-.5 second delay, every 10-30 seconds.  One LED lights up when it's turned on, the other flashes when a keystroke is sent.
 
 ![Finished example](example.jpg)
 
@@ -8,14 +10,15 @@ Keeps computer sessions active with some code for a Pi Pico and a case for it.  
 #### To disable this behavior, comment out lines in boot.py
 
 #### Parts needed
-1. 3d Printer
-2. Pi Pico
-3. 2 standard LEDs
-4. 1 Mechanical Keyboard Switch
-5. 2 resistors (I used 250 ohm)
-6. Some wire
+- Pi Pico
+- 2 standard LEDs
+- 1 Mechanical Keyboard Switch
+- 2 resistors (I used 250 ohm)
+- Some wire
+- 3d Printer
 
 #### Printing the case:
+Remixed from https://www.thingiverse.com/thing:5233768 by EG3Dprinting
 1. Load pico_case_bottom and pico_case_top in your slicer
 2. Generate the gcode, no supports needed
 3. Print it
@@ -27,7 +30,7 @@ Keeps computer sessions active with some code for a Pi Pico and a case for it.  
 3.  Solder status LED to 3v3_en and GP16
 4.  Pull keyboard button wires through top of case, then solder to ground and GP28
 
-#### Pi Pico config
+#### Pi Pico config:
 
 1. Hold down button on Pi Pico, plug in while continuing to hold
 2. While continuing to hold, wait for Pi to appear as a drive on computer
@@ -35,15 +38,15 @@ Keeps computer sessions active with some code for a Pi Pico and a case for it.  
 4. Wait for device to reboot
 5. Place all files found in Pico Files on root of Pi Pico
 
-#### Troubleshooting
+#### Troubleshooting:
 
-View serial monitor output by running a serial monitor on the COM port the device is connected to
+Debug messages can be viewed by opening a serial monitor on the COM port the device connects itself as.
 
-Do a hard reset by connecting to the CircuitPython on the COM port the device is connected to, with speed 115200
-
-If using PUTTY, set Serial Line to COM#, Speed 115200, Connection Type: Serial
+A hard reset can be performed by connecting to the Pico on the COM port the device connects itself as, with speed 115200.  If using PUTTY, set Serial Line to COM#, Speed 115200, Connection Type: Serial, then run these commands:
 
     >>> import storage
     >>> storage.erase_filesystem()
 
 If the keystroke causes issues, another key can be substituted.  keyboard_keys_hid.py has all variable to key mappings.
+
+If you'd rather download your own libraries instead of using the ones included here, check README-other.md
