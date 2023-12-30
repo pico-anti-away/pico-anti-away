@@ -2,7 +2,7 @@
 
 Keeps computer sessions active with some code for a Pi Pico and a case for it.  Mounts to the computer as an HID keyboard, sends a non used international keystroke to the computer 1-5 times, with a .1-.5 second delay, every 10-30 seconds.  It can be ran as just the microcontroller without the button/LEDs/case if the code is modified.
 
-![Finished example](example.jpg){ width=50% height=50% }
+![Finished example](example.jpg)
 
 #### --Note that once code is loaded onto Pico, it will stop mounting as a storage device, so code cannot be modified unless a hard reset (found in troubleshooting) is performed.--
 #### To disable this behavior, comment out lines in boot.py
