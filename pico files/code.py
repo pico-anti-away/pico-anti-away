@@ -10,38 +10,47 @@ from keyboard_keys_hid import *
 
 KEY_TO_PRESS = KEY_INT6  # gotten from keyboard_keys_hid
 
-# Initialize LEDs and button
-try:
-    KEY_BLINK_LED = digitalio.DigitalInOut(board.GP16)
-    KEY_BLINK_LED.direction = digitalio.Direction.OUTPUT
-    KEY_BLINK_LED.value = True
+INIT = False 
+STATUS = False  # Determines if the device is on or off at start
 
-    STATUS_LED = digitalio.DigitalInOut(board.GP2)
-    STATUS_LED.direction = digitalio.Direction.OUTPUT
-    STATUS_LED.value = True
+KEY_BLINK_LED = None
+STATUS_LED = None
+BUTTON = None
+KBD = None
 
-    BUTTON = digitalio.DigitalInOut(board.GP22)
-    BUTTON.direction = digitalio.Direction.INPUT
-    BUTTON.pull = digitalio.Pull.UP
+def init():
+    global KEY_BLINK_LED, BUTTON, STATUS_LED, KBD
 
-except Exception as e:
-    print("Error initializing components:", e)
-    KEY_BLINK_LED = None
-    STATUS_LED = None
-    BUTTON = None
+    while not INIT:
+        try:
+            KEY_BLINK_LED = digitalio.DigitalInOut(board.GP16)
+            KEY_BLINK_LED.direction = digitalio.Direction.OUTPUT
+            KEY_BLINK_LED.value = True
 
-STATUS = False  # Determines if the device is on or off
+            STATUS_LED = digitalio.DigitalInOut(board.GP2)
+            STATUS_LED.direction = digitalio.Direction.OUTPUT
+            STATUS_LED.value = True
+
+            BUTTON = digitalio.DigitalInOut(board.GP22)
+            BUTTON.direction = digitalio.Direction.INPUT
+            BUTTON.pull = digitalio.Pull.UP
+
+            KBD = Keyboard(usb_hid.devices)
+            print("init kbd", KBD)
+            break
+
+        except Exception as e:
+            print("Error initializing components:", e)
+            KEY_BLINK_LED = None
+            STATUS_LED = None
+            BUTTON = None
+            print("Waiting 1s and attempting again")
 
 def main():
     global KBD
 
-    if KEY_BLINK_LED is None or STATUS_LED is None or BUTTON is None:
-        print("Failed init, cannot start")
-        return
-
-    time.sleep(3) # 3 second wait after power is received before registering as                                                     HID
-    KBD = Keyboard(usb_hid.devices)
-    print("init kbd", KBD)
+    time.sleep(3) # 3 second wait after power is received before registering as HID
+    init()
 
     loop = asyncio.get_event_loop()
     loop.create_task(button_handler())
@@ -98,10 +107,10 @@ async def button_handler():
         # Detect a button press (transition from high to low)
         if current_button_state == False and last_button_state == True:
             await asyncio.sleep(debounce_delay)  # Wait for debounce delay
-            if BUTTON.value == False:  # Confirm the button is still pressed aft                                                    er the debounce delay
+            if BUTTON.value == False:  # Confirm the button is still pressed after the debounce delay
                 global STATUS
                 STATUS = not STATUS
-                print("Button pressed - value is ", BUTTON.value, " status is ",                                                     STATUS)
+                print("Button pressed - value is ", BUTTON.value, " status is ", STATUS)
 
                 STATUS_LED.value = not STATUS
 
