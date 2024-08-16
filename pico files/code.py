@@ -18,7 +18,7 @@ STATUS_LED = None
 BUTTON = None
 KBD = None
 
-def init():
+def init_board_components():
     global KEY_BLINK_LED, BUTTON, STATUS_LED, KBD
 
     while not INIT:
@@ -44,11 +44,23 @@ def init():
             BUTTON = None
             print("Waiting 1s and attempting again")
 
+def init_kbd():
+    global KBD
+    while True:
+        try:
+            KBD = Keyboard(usb_hid.devices) # init if status = true 
+            break
+        except:
+            print("could not init kbd, waiting and retrying")
+            time.sleep(1)
+
+
 def main():
     global KBD
 
     time.sleep(3) # 3 second wait after power is received before registering as HID
-    init()
+    init_board_components()
+    init_kbd()
 
     loop = asyncio.get_event_loop()
     loop.create_task(button_handler())
@@ -83,11 +95,9 @@ async def press_key():
                 print("kint", key_interval)
                 await asyncio.sleep(key_interval)
 
-            except KeyboardInterrupt:
-                break
-            except Exception as e:
-                print("Error:", e)
-                await led_flash(1)
+            except:
+                init_kbd()
+
         else:
             print("Button off")
             await asyncio.sleep(2)
@@ -112,9 +122,6 @@ async def button_handler():
                 
                 STATUS = not STATUS
                 print("Button pressed - value is ", BUTTON.value, " status is ", STATUS)
-                if STATUS:
-                    KBD = Keyboard(usb_hid.devices) # init if status = true 
-                    print("init kbd", KBD)  
 
                 STATUS_LED.value = not STATUS
 
