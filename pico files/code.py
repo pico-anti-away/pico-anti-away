@@ -35,8 +35,6 @@ def init():
             BUTTON.direction = digitalio.Direction.INPUT
             BUTTON.pull = digitalio.Pull.UP
 
-            KBD = Keyboard(usb_hid.devices)
-            print("init kbd", KBD)
             break
 
         except Exception as e:
@@ -67,7 +65,7 @@ async def key_led_blink():
 
 async def press_key():
     while True:
-        if STATUS:
+        if STATUS:            
             try:
                 num_key_presses = random.randint(1, 5)
                 print("kpress", num_key_presses)
@@ -95,6 +93,9 @@ async def press_key():
             await asyncio.sleep(2)
 
 async def button_handler():
+    global STATUS
+    global KBD
+    
     last_button_state = True  # Assume the button is not pressed initially
     debounce_delay = 0.05     # 50 ms debounce time
 
@@ -108,9 +109,12 @@ async def button_handler():
         if current_button_state == False and last_button_state == True:
             await asyncio.sleep(debounce_delay)  # Wait for debounce delay
             if BUTTON.value == False:  # Confirm the button is still pressed after the debounce delay
-                global STATUS
+                
                 STATUS = not STATUS
                 print("Button pressed - value is ", BUTTON.value, " status is ", STATUS)
+                if STATUS:
+                    KBD = Keyboard(usb_hid.devices) # init if status = true 
+                    print("init kbd", KBD)  
 
                 STATUS_LED.value = not STATUS
 
