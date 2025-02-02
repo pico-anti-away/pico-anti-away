@@ -25,11 +25,11 @@ def init_board_components():
         try:
             KEY_BLINK_LED = digitalio.DigitalInOut(board.GP16)
             KEY_BLINK_LED.direction = digitalio.Direction.OUTPUT
-            KEY_BLINK_LED.value = True
+            KEY_BLINK_LED.value = False
 
             STATUS_LED = digitalio.DigitalInOut(board.GP2)
             STATUS_LED.direction = digitalio.Direction.OUTPUT
-            STATUS_LED.value = True
+            STATUS_LED.value = False
 
             BUTTON = digitalio.DigitalInOut(board.GP22)
             BUTTON.direction = digitalio.Direction.INPUT
@@ -123,7 +123,7 @@ async def button_handler():
                 STATUS = not STATUS
                 print("Button pressed - value is ", BUTTON.value, " status is ", STATUS)
 
-                STATUS_LED.value = not STATUS
+                STATUS_LED.value = STATUS
 
         last_button_state = current_button_state
 

@@ -26,8 +26,8 @@ Remixed from https://www.thingiverse.com/thing:5233768 by EG3Dprinting
 #### Soldering config:
 
 1.  Solder resistors of choice to positive legs of LEDs
-2.  Solder key blink LED to 3v3 and GP2
-3.  Solder status LED to 3v3 and GP16
+2.  Solder key blink LED positive leg to GP2 and negative leg to GND
+3.  Solder status LED positive leg to GP16 and negative leg to GND
 4.  Pull keyboard button wires through top of case, then solder to ground and GP22
 
 #### Pi Pico config:
